@@ -1,0 +1,10 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="elevationSnackbar">6dp</dimen>
+    <dimen name="elevationBottomBar">8dp</dimen>
+    <dimen name="elevationFloatingButton">6dp</dimen>
+    <dimen name="elevationFloatingSearchBox">2dp</dimen>
+    <dimen name="elevationNavbar">16dp</dimen>
+
+</resources>

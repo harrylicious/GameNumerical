@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Game Numerical</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="format">%1d + %2d = %3d</string>
+    <string name="score">Score : </string>
+    <string name="scoreValue">%1d</string>
+
+</resources>
