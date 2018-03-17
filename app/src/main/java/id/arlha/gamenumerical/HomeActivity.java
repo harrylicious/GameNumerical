@@ -1,122 +1,222 @@
 package id.arlha.gamenumerical;
 
 
-import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
+import android.os.CountDownTimer;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.os.Bundle;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Arrays;
-import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import id.arlha.gamenumerical.Math.SimpleQuiz;
+import tyrantgit.explosionfield.ExplosionField;
 
 
 public class HomeActivity extends FragmentActivity {
 
-    private int mShortAnimationDuration;
+    //region Declaration Variables
+    ExplosionField explode;
+    SimpleQuiz quiz = new SimpleQuiz();
+    GameReferences pref = new GameReferences();
+    Button newButton;
+    MediaPlayer mediaPlayer = new MediaPlayer();
 
     ViewGroup container;
-    TextView txtScore, txtScoreSalah, txtJumlahChild;
-    Button btn;
+    TextView txtScore, txtBestScore, txtJumlahChild;
+    Button btn, save;
     ProgressBar progress;
-    int score = 0;
-    int salah = 0;
-    int a, b;
-    int hasil;
-    int count;
+    int correct = 0, inCorrect = 0;
+    String first, mid, last;
+    int a, b, c, score, bestScore, childCount;
+    String[] arr = quiz.shuffleQuestions(quiz.mergeAndShuffleQuestion());
+    //endregion
 
+    //region onCreate()
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Toast.makeText(getApplicationContext(), "Create" , Toast.LENGTH_SHORT).show();
         init();
+        retreiveFromSharedPreference();
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utils utils = new Utils();
-               refresh();
-                Toast.makeText(getApplicationContext(), Arrays.toString(utils.mData()), Toast.LENGTH_LONG).show();
+                refresh();
             }
         });
 
+
+
+
+    }
+    //endregion
+
+    public String checkDigit(int number) {
+        return number <= 9 ? "0" + number : String.valueOf(number);
     }
 
+    //region onResume()
     @Override
     protected void onResume() {
         super.onResume();
-        Toast.makeText(getApplicationContext(), "Resume" , Toast.LENGTH_SHORT).show();
-        txtJumlahChild.setText(String.valueOf(container.getChildCount()));
-        if (container.getChildCount() <= 0) progress.setVisibility(View.VISIBLE);
-        else progress.setVisibility(View.INVISIBLE);
+        saveIntoSharedPreference();
     }
+    //endregion
 
+    //region onStart()
     @Override
     protected void onStart() {
-        super.onStart();
-        Toast.makeText(getApplicationContext(), "Start" , Toast.LENGTH_SHORT).show();
-        refresh();
+        childCount = container.getChildCount();
+        if (childCount <= 0) {
+            refresh();
+        }
+
         progress.setVisibility(View.INVISIBLE);
-        txtJumlahChild.setText(String.valueOf(container.getChildCount()));
+        super.onStart();
+    }
+    //endregion
+
+    //region onDestroy()
+    @Override
+    protected void onDestroy() {
+        mediaPlayer.release();
+        super.onDestroy();
+    }
+    //endregion
+
+    //region SharedPreference for Scoring
+    void saveIntoSharedPreference() {
+        score = Integer.parseInt(txtScore.getText().toString());
+        bestScore = pref.getBestScore(getApplicationContext(), "best");
+        if (score > bestScore) {
+            bestScore = score;
+            pref.setBestScore(getApplicationContext(), "best", bestScore);
+            pref.setScore(getApplicationContext(), "score", bestScore);
+
+            setSpinningAnimation(txtBestScore);
+        }
+        new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        };
+        txtBestScore.setText(String.valueOf(bestScore));
+
     }
 
-
+    void retreiveFromSharedPreference() {
+        bestScore = pref.getBestScore(getApplicationContext(), "best");
+        score = pref.getBestScore(getApplicationContext(), "score");
+        txtBestScore.setText(String.valueOf(bestScore));
+        txtScore.setText(String.valueOf(score));
+    }
+    //endregion
 
     //region Initialize views
     void init() {
         container = findViewById(R.id.container);
         btn = findViewById(R.id.btnRefresh);
-        txtScore = findViewById(R.id.txtNilaiScore);
-        txtJumlahChild = findViewById(R.id.txtJumlahChild);
+        txtScore = findViewById(R.id.txtValueScore);
+        txtBestScore = findViewById(R.id.txtBestScore);
+        //txtScoreSalah = findViewById(R.id.txt);
         progress = findViewById(R.id.progressbar);
     }
 
+
+    //endregion
+
+    //region Add Question into view dinamically
     void refresh() {
-        for (int i = 0; i < 10; i++) {
-            addItem(container);
+        childCount = container.getChildCount();
+
+
+        for (int i = 0; i < (10 - childCount); i++) {
+            newButton = new Button(getApplicationContext());
+            //newButton.setId(i);
+
+            newButton.setBackground(getResources().getDrawable(R.drawable.layer_btn_orange));
+            newButton.setText(arr[i]);
+            newButton.setContentDescription(arr[i]);
+            newButton.setBottom(5);
+
+            setFallDownAnimation(newButton);
+            container.addView(newButton);
+
+            newButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    String txt = (String) v.getContentDescription();
+                    if (txt.trim().length() == 9) {
+                        first = (String) txt.subSequence(0,1);
+                        mid = (String) txt.subSequence(4,5);
+                        last = (String) txt.subSequence(8,9);
+                    }
+                    else {
+                        first = (String) txt.subSequence(0,1);
+                        mid = (String) txt.subSequence(4,5);
+                        last = (String) txt.subSequence(8,10);
+                    }
+
+                    a = Integer.parseInt(first);
+                    b = Integer.parseInt(mid);
+                    c = Integer.parseInt(last);
+
+                    //Toast.makeText(getApplicationContext(), v.getContentDescription(), Toast.LENGTH_SHORT).show();
+
+                    if (a * b == c) {
+                        setExplode(v);
+                        container.removeView(v);
+                        correct++;
+                        txtScore.setText(String.format(getResources().getString(R.string.scoreValue), correct));
+                        mediaPlayer.stop();
+                        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.ting);
+                        mediaPlayer.start();
+                    } else {
+                        v.setBackground(getResources().getDrawable(R.drawable.layer_btn_black));
+                        Boolean checkState = v.getBackground().equals(getResources().getDrawable(R.drawable.layer_btn_black));
+                        if (!checkState) {
+                            inCorrect++;
+                            mediaPlayer.stop();
+                            mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.tong);
+                            mediaPlayer.start();
+                        }
+                        Toast.makeText(getApplicationContext(), checkState.toString(), Toast.LENGTH_SHORT).show();
+
+                        //txtScoreSalah.setText(String.format(getResources().getString(R.string.scoreValue), inCorrect));
+                    }
+                    saveIntoSharedPreference();
+                }
+            });
         }
+
     }
     //endregion
 
-    void addItem(final ViewGroup container) {
-        final Button newButton = new Button(getApplicationContext());
+    void setExplode(View v) {
+        explode = ExplosionField.attach2Window(this);
+        explode.explode(v);
+    }
 
+    void setFallDownAnimation(View v) {
+        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.down_from_top);
+        v.startAnimation(animation);
+    }
 
-        count = container.getChildCount() + 1;
-
-        hasil = a + b;
-
-
-        newButton.setBackground(getResources().getDrawable(R.drawable.layer_btn_orange));
-
-
-        a = 1 + count;
-        b = 10 - count;
-
-        newButton.setText(String.format(getResources().getString(R.string.format), a, b, hasil));
-        newButton.setBottom(5);
-
-
-        newButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (a + b == hasil) {
-                    container.removeView(newButton);
-                    salah++;
-                } else {
-                    newButton.setBackgroundColor(getResources().getColor(R.color.black));
-                }
-            }
-        });
-        count = container.getChildCount();
-        score++;
-        txtScore.setText(String.format(getResources().getString(R.string.scoreValue), score));
-        container.addView(newButton);
+    void setSpinningAnimation(View v) {
+        Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.hyperspace_jump);
+        v.startAnimation(animation);
     }
 
 

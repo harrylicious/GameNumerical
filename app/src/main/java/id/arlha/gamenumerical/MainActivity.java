@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void init() {
-        Button start = findViewById(R.id.btnStart);
+        Button start = (Button) findViewById(R.id.btnStart);
 
 
         start.setOnClickListener(new View.OnClickListener() {

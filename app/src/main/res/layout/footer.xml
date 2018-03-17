@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#1D1E30"
+    android:padding="3dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="id.arlha.gamenumerical.MainActivity">
 
@@ -15,13 +16,62 @@
         android:layout_alignParentTop="true"
         android:background="#2D2D4B" />
 
-    <TextView
-        android:id="@+id/txtJumlahChild"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <RelativeLayout
         android:layout_centerInParent="true"
-        android:fontFamily="@font/roboto_regular"
-        android:text="115"
-        android:textColor="@color/white"
-        android:textSize="21sp" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btnAddition"
+            android:background="@drawable/layer_btn_orange"
+            android:layout_margin="2dp"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:fontFamily="@font/roboto_regular"
+            android:text="+"
+            android:textColor="@color/white"
+            android:textSize="28sp" />
+
+        <Button
+            android:id="@+id/btnAlleviation"
+            android:layout_toRightOf="@id/btnAddition"
+            android:layout_margin="2dp"
+            android:background="@drawable/layer_btn_green"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="@font/roboto_regular"
+            android:text="-"
+            android:textColor="@color/white"
+            android:textSize="28sp" />
+
+        <Button
+            android:id="@+id/btnMultiplication"
+            android:layout_toRightOf="@id/btnAlleviation"
+            android:layout_margin="2dp"
+            android:background="@drawable/layer_btn_red"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="@font/roboto_regular"
+            android:text="x"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btnDivision"
+            android:layout_toRightOf="@id/btnMultiplication"
+            android:layout_margin="2dp"
+            android:background="@drawable/layer_btn_blue"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:fontFamily="@font/roboto_regular"
+            android:text=":"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+    </RelativeLayout>
+
+
 </RelativeLayout>

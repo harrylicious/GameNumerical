@@ -17,6 +17,7 @@
         android:background="#2D2D4B" />
 
     <TextView
+        android:id="@+id/txtValueScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -26,22 +27,23 @@
         android:textSize="21sp" />
 
     <TextView
-        android:id="@+id/txtNilaiScore"
+        android:id="@+id/txtBestScore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_centerInParent="true"
         android:fontFamily="@font/roboto_regular"
         android:text="38"
+        android:textStyle="bold"
         android:layout_marginRight="5dp"
         android:textColor="@color/white"
-        android:textSize="19sp" />
+        android:textSize="21sp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_toLeftOf="@id/txtNilaiScore"
+        android:layout_toLeftOf="@id/txtBestScore"
         android:fontFamily="@font/roboto_light"
         android:text="Best Score: "
         android:textColor="@color/white"
